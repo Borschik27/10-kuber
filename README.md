@@ -200,3 +200,26 @@ busybox:
 multitool:
   image: praqma/network-multitool:stable
 ```
+
+## Запусти наш helm-chart
+  1. Запускается с параметрами взятыми из values.yaml
+     ![image](https://github.com/user-attachments/assets/2ed89798-7c84-4f53-9ad4-869ed067aeef)
+     ![image](https://github.com/user-attachments/assets/88c658fd-3c9b-4382-a604-47b8289e1da6)
+
+  2. Запустим с параметрами values-prod.yaml
+     ![image](https://github.com/user-attachments/assets/00d4ca35-3195-45d9-8066-806fc0442b60)
+     ![image](https://github.com/user-attachments/assets/9ee72eda-2473-4b0a-bf1a-9a362cea4945)
+    
+  4. Количество реплик можно изменить следующим образом
+     ```
+      helm upgrade busybox-multitool ./busybox-multitool --set replicaCount=3 --set image.tag=v2.0
+     ```
+     ![image](https://github.com/user-attachments/assets/4f023878-f52c-4a93-83cd-77b523738627)
+     ![image](https://github.com/user-attachments/assets/a2887699-e334-4243-aeb2-3b3d2b8a5786)
+
+  5. Удалить helm
+     ```
+     helm uninstall <name> -n <name-space>
+     ```
+     ![image](https://github.com/user-attachments/assets/0fa98d70-0ead-4509-970f-4a01f8a835ad)
+
