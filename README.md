@@ -103,7 +103,7 @@ busybox-multitool/
 
 # Задача 1
 
-Структура helm:
+## Структура helm:
 ---
 ```plaintext
 .
@@ -118,7 +118,7 @@ busybox-multitool/
 ```
 ---
 
-##Манифесты:
+## Манифесты:
 ### deployment
 ```
 apiVersion: apps/v1
