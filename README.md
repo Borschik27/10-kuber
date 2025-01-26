@@ -100,3 +100,103 @@ busybox-multitool/
 ##  4. **`values.yaml`**
   Эти файлы содержат значения, которые подставляются в шаблоны для конфигурации чарта. Они позволяют настроить приложение для разных окружений.
 
+
+# Задача 1
+
+Структура helm:
+---
+```plaintext
+.
+└── busybox-multitool
+    ├── Chart.yaml
+    ├── templates
+    │   ├── deployment.yaml
+    │   └── service.yaml
+    ├── values-dev.yaml
+    ├── values-prod.yaml
+    └── values.yaml
+```
+---
+
+##Манифесты:
+### deployment
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-busybox-multitool
+  labels:
+    app: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      volumes:
+      - name: shared-data
+        emptyDir: {}
+      containers:
+      - name: busybox
+        image: {{ .Values.busybox.image }}
+        volumeMounts:
+        - name: shared-data
+          mountPath: /data
+        command:
+        - sh
+        - -c
+        - "while true; do echo $(date) >> /data/shared.log; sleep 20; done"
+      - name: multitool
+        image: {{ .Values.multitool.image }}
+        volumeMounts:
+        - name: shared-data
+          mountPath: /data
+        command:
+        - sh
+        - -c
+        - "while true; do cat /data/shared.log; sleep 20; done"
+```
+
+### service
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-busybox-service
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: {{ .Chart.Name }}
+```
+
+### values/valuse-dev
+```
+replicaCount: 1
+
+busybox:
+  image: busybox:latest
+
+multitool:
+  image: praqma/network-multitool:latest
+```
+
+### values-prod
+```
+replicaCount: 3
+
+busybox:
+  image: busybox:stable
+
+multitool:
+  image: praqma/network-multitool:stable
+```
